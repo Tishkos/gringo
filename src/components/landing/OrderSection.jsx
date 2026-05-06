@@ -3,12 +3,41 @@ import { motion } from "framer-motion";
 import { ShieldCheck, Truck, Zap } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import { t } from "@/lib/translations";
+import { getStripePaymentLink } from "@/lib/stripeLinks";
 
 const COVER_FRONT = "https://media.base44.com/images/public/user_6970ab0e6ab454a747b1106c/67fd0813d_lainoficialmexico.png";
 
 export default function OrderSection() {
   const { lang } = useLang();
   const tx = t[lang];
+  const digitalLink = getStripePaymentLink("digital");
+  const cdLink = getStripePaymentLink("cd");
+  const vinylLink = getStripePaymentLink("vinyl");
+
+  const buttonBase =
+    "rounded-2xl px-4 py-3.5 text-center font-body text-sm font-semibold transition";
+
+  const renderBuyLink = (href, label, featured = false) => {
+    const isReady = Boolean(href);
+
+    return (
+      <a
+        href={isReady ? href : "#order"}
+        target={isReady ? "_blank" : undefined}
+        rel={isReady ? "noreferrer" : undefined}
+        aria-disabled={!isReady}
+        title={!isReady ? tx.stripe_link_missing : undefined}
+        onClick={!isReady ? (event) => event.preventDefault() : undefined}
+        className={`${buttonBase} ${
+          featured
+            ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl"
+            : "border border-border bg-card text-foreground hover:border-primary hover:text-primary"
+        } ${!isReady ? "cursor-not-allowed opacity-50" : ""}`}
+      >
+        {label}
+      </a>
+    );
+  };
 
   return (
     <section id="order" className="border-t border-border/50 bg-card/50">
@@ -91,15 +120,9 @@ export default function OrderSection() {
             </div>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
-              <button className="rounded-2xl bg-primary px-4 py-3.5 font-body text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition hover:shadow-xl">
-                {tx.btn_buy_digital}
-              </button>
-              <button className="rounded-2xl border border-border bg-card px-4 py-3.5 font-body text-sm font-semibold text-foreground transition hover:border-primary hover:text-primary">
-                {tx.btn_order_cd}
-              </button>
-              <button className="rounded-2xl border border-border bg-card px-4 py-3.5 font-body text-sm font-semibold text-foreground transition hover:border-primary hover:text-primary">
-                {tx.btn_order_vinyl}
-              </button>
+              {renderBuyLink(digitalLink, tx.btn_buy_digital, true)}
+              {renderBuyLink(cdLink, tx.btn_order_cd)}
+              {renderBuyLink(vinylLink, tx.btn_order_vinyl)}
             </div>
           </motion.div>
         </div>

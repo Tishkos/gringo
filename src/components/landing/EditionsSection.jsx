@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Star, Zap, Check } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import { t } from "@/lib/translations";
+import { getStripePaymentLink } from "@/lib/stripeLinks";
 
 const COVER_FRONT = "https://media.base44.com/images/public/user_6970ab0e6ab454a747b1106c/67fd0813d_lainoficialmexico.png";
 
@@ -125,6 +126,7 @@ export default function EditionsSection() {
       bullets: tx.digital_bullets,
       note: tx.digital_note,
       cta: tx.digital_cta,
+      paymentLink: getStripePaymentLink("digital"),
       featured: true,
       badge: tx.digital_badge,
       badgeIcon: <Zap className="h-3 w-3" />,
@@ -138,6 +140,7 @@ export default function EditionsSection() {
       bullets: tx.cd_bullets,
       note: tx.cd_note,
       cta: tx.cd_cta,
+      paymentLink: getStripePaymentLink("cd"),
       featured: false,
       badge: null,
       visual: <CdVisual />,
@@ -150,6 +153,7 @@ export default function EditionsSection() {
       bullets: tx.vinyl_bullets,
       note: tx.vinyl_note,
       cta: tx.vinyl_cta,
+      paymentLink: getStripePaymentLink("vinyl"),
       featured: false,
       badge: tx.vinyl_badge,
       badgeIcon: <Star className="h-3 w-3" />,
@@ -232,12 +236,17 @@ export default function EditionsSection() {
             </div>
 
             <a
-              href="#order"
+              href={ed.paymentLink || "#order"}
+              target={ed.paymentLink ? "_blank" : undefined}
+              rel={ed.paymentLink ? "noreferrer" : undefined}
+              aria-disabled={!ed.paymentLink}
+              title={!ed.paymentLink ? tx.stripe_link_missing : undefined}
+              onClick={!ed.paymentLink ? (event) => event.preventDefault() : undefined}
               className={`mt-6 inline-block w-full rounded-2xl px-5 py-3.5 text-center font-body text-sm font-semibold transition ${
                 ed.featured
                   ? "bg-primary-foreground text-primary shadow-lg hover:shadow-xl"
                   : "border border-border bg-card hover:border-primary hover:text-primary"
-              }`}
+              } ${!ed.paymentLink ? "cursor-not-allowed opacity-50" : ""}`}
             >
               {ed.cta}
             </a>

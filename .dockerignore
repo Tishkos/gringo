@@ -1,0 +1,16 @@
+.git
+.github
+node_modules
+dist
+server/data
+private-downloads/*
+!private-downloads/README.md
+.env
+.env.*
+!.env.example
+!server/.env.example
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+*.local
+*.log

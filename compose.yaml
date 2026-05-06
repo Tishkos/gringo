@@ -1,0 +1,31 @@
+services:
+  gringo:
+    build:
+      context: .
+      args:
+        VITE_STRIPE_DIGITAL_PAYMENT_LINK: ${VITE_STRIPE_DIGITAL_PAYMENT_LINK}
+        VITE_STRIPE_CD_PAYMENT_LINK: ${VITE_STRIPE_CD_PAYMENT_LINK}
+        VITE_STRIPE_VINYL_PAYMENT_LINK: ${VITE_STRIPE_VINYL_PAYMENT_LINK}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-}
+    image: holagringo/gringo:latest
+    restart: unless-stopped
+    ports:
+      - "4242:4242"
+    environment:
+      NODE_ENV: production
+      PORT: 4242
+      CLIENT_ORIGIN: ${CLIENT_ORIGIN}
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      ALLOWED_PRICE_IDS: ${ALLOWED_PRICE_IDS}
+      DIGITAL_DOWNLOAD_FILE: private-downloads/la-inoficial-digital.zip
+      DOWNLOAD_FILE_NAME: ${DOWNLOAD_FILE_NAME:-Hola Gringo - Digital Album.zip}
+      DOWNLOAD_TOKEN_TTL_HOURS: ${DOWNLOAD_TOKEN_TTL_HOURS:-168}
+      ENABLE_LOCAL_CHECKOUT_TESTS: "false"
+    volumes:
+      - ./private-downloads:/app/private-downloads
+      - gringo-download-data:/app/server/data
+
+volumes:
+  gringo-download-data:

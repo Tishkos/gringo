@@ -8,6 +8,7 @@ import { LanguageProvider } from '@/lib/LanguageContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Home from './pages/Home';
 import TermsAndConditions from './pages/TermsAndConditions';
+import CheckoutSuccess from './pages/CheckoutSuccess';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -38,6 +39,7 @@ const AuthenticatedApp = () => {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/terms" element={<TermsAndConditions />} />
+      <Route path="/checkout/success" element={<CheckoutSuccess />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

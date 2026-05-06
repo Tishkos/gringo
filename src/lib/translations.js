@@ -90,6 +90,18 @@ export const t = {
     btn_buy_digital: "Buy Digital",
     btn_order_cd: "Order CD",
     btn_order_vinyl: "Order Vinyl",
+    stripe_link_missing: "Add your Stripe Payment Link URL in .env.local",
+
+    // Checkout success
+    checkout_label: "Payment Complete",
+    checkout_title: "Your download is ready",
+    checkout_loading: "Confirming your payment...",
+    checkout_missing: "Missing checkout session. Please return from Stripe after payment.",
+    checkout_error: "We could not prepare your download yet. If payment succeeded, please contact support with your receipt.",
+    checkout_body: "Scan the QR code or use the button below to download the album.",
+    checkout_once_note: "This secure download link works once.",
+    checkout_download: "Download Album",
+    checkout_return_home: "Back to Home",
   },
 
   es: {
@@ -183,5 +195,17 @@ export const t = {
     btn_buy_digital: "Comprar digital",
     btn_order_cd: "Pedir CD",
     btn_order_vinyl: "Pedir vinilo",
+    stripe_link_missing: "Agrega tu enlace de pago de Stripe en .env.local",
+
+    // Checkout success
+    checkout_label: "Pago completado",
+    checkout_title: "Tu descarga esta lista",
+    checkout_loading: "Confirmando tu pago...",
+    checkout_missing: "Falta la sesion de pago. Vuelve desde Stripe despues del pago.",
+    checkout_error: "No pudimos preparar tu descarga todavia. Si el pago fue exitoso, contacta soporte con tu recibo.",
+    checkout_body: "Escanea el codigo QR o usa el boton para descargar el album.",
+    checkout_once_note: "Este enlace seguro funciona una sola vez.",
+    checkout_download: "Descargar album",
+    checkout_return_home: "Volver al inicio",
   },
 };
