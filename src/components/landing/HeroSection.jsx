@@ -78,20 +78,30 @@ export default function HeroSection() {
             <motion.a
               href="#editions"
               onClick={(event) => event.stopPropagation()}
-              initial={{ opacity: 0, y: 54, scale: 0.72, rotate: -12 }}
-              animate={{ opacity: 1, y: 0, scale: 1, rotate: -5 }}
-              transition={{ type: "spring", stiffness: 190, damping: 13, delay: 0.9 }}
-              whileHover={{ y: -4, rotate: 0, scale: 1.08 }}
+              initial={{ opacity: 0, y: -80, scale: 1.45, rotate: -18 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                scale: [1.45, 0.86, 1.08, 1],
+                rotate: [-18, 8, -4, -7],
+              }}
+              transition={{
+                opacity: { duration: 0.08, delay: 0.8 },
+                y: { type: "spring", stiffness: 540, damping: 14, delay: 0.8 },
+                scale: { duration: 0.5, times: [0, 0.48, 0.72, 1], delay: 0.8 },
+                rotate: { duration: 0.5, times: [0, 0.45, 0.75, 1], delay: 0.8 },
+              }}
+              whileHover={{ y: -5, rotate: -2, scale: 1.08 }}
               whileTap={{ scale: 0.97 }}
-              className="absolute bottom-8 left-1/2 z-20 flex h-32 w-32 -translate-x-1/2 items-center justify-center bg-red-600 text-white shadow-2xl shadow-black/30 sm:h-36 sm:w-36"
+              className="absolute bottom-7 right-7 z-20 flex h-32 w-32 items-center justify-center bg-[#dc2626] text-white shadow-2xl shadow-red-950/40 sm:h-36 sm:w-36"
               style={{
                 clipPath:
                   "polygon(50% 0%,56% 8%,64% 3%,69% 12%,78% 9%,82% 19%,91% 22%,88% 31%,100% 38%,92% 46%,100% 54%,92% 62%,100% 72%,88% 76%,91% 86%,80% 84%,76% 95%,68% 89%,61% 100%,53% 91%,45% 100%,39% 91%,30% 96%,26% 85%,15% 87%,17% 76%,5% 72%,13% 62%,0% 55%,9% 48%,0% 39%,12% 33%,9% 22%,20% 20%,24% 9%,34% 13%,41% 3%)",
               }}
             >
               <motion.span
-                animate={{ scale: [1, 1.04, 1] }}
-                transition={{ duration: 1.7, repeat: Infinity, ease: "easeInOut" }}
+                animate={{ scale: [1, 1.035, 1], rotate: [0, -1, 0] }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay: 1.35 }}
                 className="flex h-[72%] w-[72%] items-center justify-center rounded-full border-4 border-white/90 text-center font-body text-2xl font-black leading-none tracking-tight sm:text-3xl"
               >
                 BUY
