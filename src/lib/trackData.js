@@ -13,6 +13,7 @@ const trackTitles = [
   "The Women Take the City",
   "Mexico Inolvidable (Vocal)",
   "Guadalajara (Lat)",
+  "Gol para mexico additional",
 ];
 
 export const tracks = trackTitles.map((title, index) => ({

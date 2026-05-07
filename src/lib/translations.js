@@ -22,7 +22,7 @@ export const t = {
 
     // Tracklist
     tracklist_label: "Tracklist",
-    tracklist_headline: "11 Tracks",
+    tracklist_headline: "12 Tracks",
     tracklist_body: "The complete Hola Gringo tracklist — a cinematic journey through Mexico.",
     tracklist_click: "Click a track to view details",
 
@@ -127,7 +127,7 @@ export const t = {
 
     // Tracklist
     tracklist_label: "Lista de canciones",
-    tracklist_headline: "11 Canciones",
+    tracklist_headline: "12 Canciones",
     tracklist_body: "La lista completa de Hola Gringo — un viaje cinematográfico por México.",
     tracklist_click: "Haz clic en una canción para ver detalles",
 
