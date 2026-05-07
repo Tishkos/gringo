@@ -8,7 +8,7 @@ const COVER_FRONT = "https://media.base44.com/images/public/user_6970ab0e6ab454a
 const COVER_BACK = "https://media.base44.com/images/public/user_6970ab0e6ab454a747b1106c/7fb9d9309_holagringogreenstripe.png";
 
 export default function HeroSection() {
-  const [showBack, setShowBack] = useState(false);
+  const [showBack, setShowBack] = useState(true);
   const { lang } = useLang();
   const tx = t[lang];
 
@@ -32,7 +32,7 @@ export default function HeroSection() {
 
           <div className="space-y-4">
             <h1 className="font-display text-5xl font-black leading-[0.92] tracking-tight text-primary sm:text-6xl lg:text-7xl">
-              La Inoficial
+              Hola Gringo
             </h1>
             <p className="max-w-lg font-display text-xl italic leading-relaxed text-foreground/70 sm:text-2xl">
               {tx.hero_subtitle}
@@ -64,16 +64,41 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.15 }} className="relative">
+        <motion.div initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.15 }} className="relative px-3 sm:px-8 lg:px-0">
           <div className="group relative cursor-pointer overflow-hidden rounded-[2rem] border border-border bg-card p-3 shadow-2xl transition-transform hover:scale-[1.01]" onClick={() => setShowBack(!showBack)}>
-            <img
+            <motion.img
+              key={showBack ? "back-cover" : "front-cover"}
+              initial={{ opacity: 0, rotateY: -16, scale: 0.98 }}
+              animate={{ opacity: 1, rotateY: 0, scale: 1 }}
+              transition={{ duration: 0.55, ease: "easeOut" }}
               src={showBack ? COVER_BACK : COVER_FRONT}
-              alt="La Inoficial"
+              alt={showBack ? "Hola Gringo back cover" : "Hola Gringo front cover"}
               className="aspect-square w-full rounded-[1.5rem] object-cover transition-all duration-700"
             />
-            <div className="absolute bottom-6 left-6 right-6 rounded-2xl bg-foreground/70 px-4 py-2.5 text-center font-body text-xs font-medium text-primary-foreground backdrop-blur-md">
-              {showBack ? tx.hero_cover_back : tx.hero_cover_front}
-            </div>
+            <motion.a
+              href="#editions"
+              onClick={(event) => event.stopPropagation()}
+              initial={{ opacity: 0, y: 54, scale: 0.72, rotate: -12 }}
+              animate={{ opacity: 1, y: 0, scale: 1, rotate: -5 }}
+              transition={{ type: "spring", stiffness: 190, damping: 13, delay: 0.9 }}
+              whileHover={{ y: -4, rotate: 0, scale: 1.08 }}
+              whileTap={{ scale: 0.97 }}
+              className="absolute bottom-8 left-1/2 z-20 flex h-32 w-32 -translate-x-1/2 items-center justify-center bg-red-600 text-white shadow-2xl shadow-black/30 sm:h-36 sm:w-36"
+              style={{
+                clipPath:
+                  "polygon(50% 0%,56% 8%,64% 3%,69% 12%,78% 9%,82% 19%,91% 22%,88% 31%,100% 38%,92% 46%,100% 54%,92% 62%,100% 72%,88% 76%,91% 86%,80% 84%,76% 95%,68% 89%,61% 100%,53% 91%,45% 100%,39% 91%,30% 96%,26% 85%,15% 87%,17% 76%,5% 72%,13% 62%,0% 55%,9% 48%,0% 39%,12% 33%,9% 22%,20% 20%,24% 9%,34% 13%,41% 3%)",
+              }}
+            >
+              <motion.span
+                animate={{ scale: [1, 1.04, 1] }}
+                transition={{ duration: 1.7, repeat: Infinity, ease: "easeInOut" }}
+                className="flex h-[72%] w-[72%] items-center justify-center rounded-full border-4 border-white/90 text-center font-body text-2xl font-black leading-none tracking-tight sm:text-3xl"
+              >
+                BUY
+                <br />
+                NOW
+              </motion.span>
+            </motion.a>
           </div>
         </motion.div>
       </div>
