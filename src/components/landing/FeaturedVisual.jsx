@@ -44,7 +44,7 @@ export default function FeaturedVisual() {
           <img
             src={COVER_FRONT}
             alt="La Inoficial – Featured Visual"
-            className="h-full w-full object-cover"
+            className="order-first h-full w-full object-cover lg:order-none"
           />
         </div>
       </motion.div>
