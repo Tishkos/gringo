@@ -101,7 +101,7 @@ export default function HeroSection() {
                   delay: 0.8,
                 },
                 scale: {
-                  duration: 0.62,
+                  duration: 0.63,
                   times: [0, 0.34, 0.55, 0.75, 1],
                   ease: "easeOut",
                   delay: 0.8,

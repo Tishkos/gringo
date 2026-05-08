@@ -24,7 +24,7 @@ export default function SiteHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
         <a href="#home" className="group">
           <div className="font-display text-2xl font-black tracking-[0.14em] text-primary">
-            LA INOFICIAL
+            HOLA GRINGO
           </div>
           <div className="font-body text-[10px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
             Mexico · Soundtrack
