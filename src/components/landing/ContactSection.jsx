@@ -3,6 +3,9 @@ import { motion } from "framer-motion";
 import { Mail, MessageCircle, ChevronDown } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 
+const CONTACT_EMAIL = "astudilloestrella@gmail.com";
+const WHATSAPP_URL = "https://wa.me/36704066713";
+
 export default function ContactSection() {
   const { lang } = useLang();
   const [open, setOpen] = useState(false);
@@ -65,14 +68,14 @@ export default function ContactSection() {
               {open && (
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <a
-                    href="mailto:daniel@astudilloestrella.com"
+                    href={`mailto:${CONTACT_EMAIL}`}
                     className="inline-flex items-center gap-2 rounded-2xl border border-border bg-card px-6 py-3 font-body text-sm font-semibold text-foreground transition hover:border-primary hover:text-primary"
                   >
                     <Mail className="h-4 w-4" />
                     {tx.btn_email}
                   </a>
                   <a
-                    href="https://wa.me/message/contact"
+                    href={WHATSAPP_URL}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-2xl border border-border bg-card px-6 py-3 font-body text-sm font-semibold text-foreground transition hover:border-primary hover:text-primary"

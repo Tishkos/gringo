@@ -1,118 +1,249 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Star, Zap, Check } from "lucide-react";
+import { Star, Zap, Check, Download, Disc3, Music, Shield } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import { t } from "@/lib/translations";
 import { getStripePaymentLink } from "@/lib/stripeLinks";
 
-const COVER_FRONT = "https://media.base44.com/images/public/user_6970ab0e6ab454a747b1106c/67fd0813d_lainoficialmexico.png";
+const editionCovers = {
+  digital: "/covers/digital-edition-transparent.png",
+  cd: "/covers/cd-edition-transparent.png",
+  vinyl: "/covers/vinyl-edition-transparent.png",
+  qr: "/covers/qr.png",
+};
 
-// iPhone mockup — black aesthetic with QR code
-function IphoneMockup({ instantLabel }) {
+/* ─────────────────────────────────────────────────────────────────────
+   Digital Included Banner — communicates QR = free digital download
+───────────────────────────────────────────────────────────────────── */
+function DigitalIncludedBanner({ featured }) {
   return (
-    <div className="flex justify-center py-4">
-      <div className="relative w-40 h-72 rounded-[2.6rem] shadow-2xl"
-        style={{ background: "linear-gradient(160deg, #2a2a2a, #111, #222)", border: "2px solid #3a3a3a" }}>
-        <div className="absolute -left-[3px] top-16 w-[3px] h-5 rounded-l-full bg-zinc-700" />
-        <div className="absolute -left-[3px] top-24 w-[3px] h-7 rounded-l-full bg-zinc-700" />
-        <div className="absolute -right-[3px] top-20 w-[3px] h-8 rounded-r-full bg-zinc-700" />
-        <div className="absolute inset-[5px] rounded-[2.2rem] overflow-hidden" style={{ background: "#0f0f0f" }}>
-          <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-10 h-[9px] rounded-full bg-black z-20 border border-zinc-800" />
-          <div className="absolute top-6 left-1/2 -translate-x-1/2 w-[78%]">
-            <div className="aspect-square rounded-lg overflow-hidden shadow-lg">
-              <img src={COVER_FRONT} alt="La Inoficial" className="w-full h-full object-cover" />
-            </div>
-          </div>
-          <div className="absolute top-[52%] left-0 right-0 px-3 text-center">
-            <div className="font-body text-[10px] font-bold text-white">La Inoficial</div>
-            <div className="font-body text-[8px] text-zinc-400">Daniel Astudillo Estrella</div>
-          </div>
-          <div className="absolute top-[61%] left-1/2 -translate-x-1/2 w-12 h-12 bg-white rounded p-0.5">
-            <svg viewBox="0 0 21 21" className="w-full h-full" fill="none">
-              <rect width="21" height="21" fill="white"/>
-              <rect x="1" y="1" width="7" height="7" rx="1" fill="black"/>
-              <rect x="2" y="2" width="5" height="5" rx="0.5" fill="white"/>
-              <rect x="3" y="3" width="3" height="3" fill="black"/>
-              <rect x="13" y="1" width="7" height="7" rx="1" fill="black"/>
-              <rect x="14" y="2" width="5" height="5" rx="0.5" fill="white"/>
-              <rect x="15" y="3" width="3" height="3" fill="black"/>
-              <rect x="1" y="13" width="7" height="7" rx="1" fill="black"/>
-              <rect x="2" y="14" width="5" height="5" rx="0.5" fill="white"/>
-              <rect x="3" y="15" width="3" height="3" fill="black"/>
-              <rect x="9" y="1" width="1" height="1" fill="black"/>
-              <rect x="11" y="1" width="1" height="1" fill="black"/>
-              <rect x="9" y="3" width="2" height="1" fill="black"/>
-              <rect x="9" y="5" width="1" height="1" fill="black"/>
-              <rect x="11" y="5" width="1" height="1" fill="black"/>
-              <rect x="9" y="7" width="1" height="2" fill="black"/>
-              <rect x="11" y="7" width="1" height="1" fill="black"/>
-              <rect x="13" y="9" width="1" height="2" fill="black"/>
-              <rect x="15" y="9" width="2" height="1" fill="black"/>
-              <rect x="18" y="9" width="2" height="1" fill="black"/>
-              <rect x="9" y="9" width="2" height="2" fill="black"/>
-              <rect x="1" y="9" width="1" height="2" fill="black"/>
-              <rect x="3" y="9" width="2" height="1" fill="black"/>
-              <rect x="6" y="9" width="2" height="2" fill="black"/>
-              <rect x="9" y="13" width="2" height="1" fill="black"/>
-              <rect x="13" y="13" width="1" height="2" fill="black"/>
-              <rect x="15" y="14" width="2" height="1" fill="black"/>
-              <rect x="18" y="13" width="2" height="2" fill="black"/>
-              <rect x="11" y="15" width="2" height="2" fill="black"/>
-              <rect x="15" y="16" width="1" height="2" fill="black"/>
-              <rect x="17" y="17" width="2" height="2" fill="black"/>
-              <rect x="9" y="17" width="1" height="2" fill="black"/>
-            </svg>
-          </div>
-          <div className="absolute bottom-3 left-3 right-3">
-            <div className="rounded-xl py-1.5 text-center font-body text-[8px] font-bold text-white uppercase tracking-wide"
-              style={{ background: "linear-gradient(135deg, #16a34a, #15803d)" }}>
-              ⬇ {instantLabel}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function CdVisual() {
-  return (
-    <div className="flex justify-center py-4">
-      <div className="relative w-36 h-40 rounded-sm shadow-2xl"
-        style={{ background: "linear-gradient(160deg, rgba(220,230,240,0.9), rgba(180,200,215,0.85))", border: "1.5px solid rgba(200,215,225,0.95)" }}>
-        <div className="absolute left-0 top-0 bottom-0 w-[5px] rounded-l-sm"
-          style={{ background: "linear-gradient(to right, rgba(255,255,255,0.6), transparent)" }} />
-        <div className="absolute inset-[4px] rounded-sm overflow-hidden">
-          <img src={COVER_FRONT} alt="CD Edition" className="w-full h-full object-cover" />
-        </div>
-        <div className="absolute inset-0 rounded-sm pointer-events-none"
-          style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.25) 0%, transparent 50%, rgba(255,255,255,0.08) 100%)" }} />
-        <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full shadow-lg z-10 flex items-center justify-center"
-          style={{ background: "conic-gradient(from 0deg, #c0c0c0, #e8e8e8, #a0a0a0, #d8d8d8, #b0b0b0, #e0e0e0, #c0c0c0)" }}>
-          <div className="absolute inset-0 rounded-full opacity-40"
-            style={{ background: "conic-gradient(from 0deg, rgba(255,0,0,0.3), rgba(255,165,0,0.3), rgba(255,255,0,0.3), rgba(0,255,0,0.3), rgba(0,0,255,0.3), rgba(238,130,238,0.3), rgba(255,0,0,0.3))" }} />
-          <div className="absolute w-[85%] h-[85%] rounded-full border border-white/20" />
-          <div className="absolute w-[65%] h-[65%] rounded-full border border-white/20" />
-          <div className="w-5 h-5 rounded-full bg-white border border-zinc-300 z-10" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function VinylVisual() {
-  return (
-    <div className="flex justify-center py-4">
+    <div
+      className={`flex items-center gap-3 rounded-2xl border px-3.5 py-2.5 ${
+        featured
+          ? "border-primary-foreground/20 bg-primary-foreground/10"
+          : "border-border bg-muted/40"
+      }`}
+    >
+      {/* QR code thumbnail */}
       <div
-        className="w-40 h-40 rounded-xl overflow-hidden shadow-2xl border border-white/10"
-        style={{ transform: "rotate(-5deg)", boxShadow: "6px 8px 30px rgba(0,0,0,0.5)" }}
+        className={`shrink-0 rounded-xl p-1.5 ${
+          featured ? "bg-primary-foreground/15" : "bg-card"
+        }`}
       >
-        <img src={COVER_FRONT} alt="Vinyl Sleeve" className="w-full h-full object-cover" />
+        <img
+          src={editionCovers.qr}
+          alt="QR code for digital download"
+          className="h-8 w-8 rounded object-contain"
+        />
       </div>
+
+      {/* Label */}
+      <div className="min-w-0 flex-1">
+        <p
+          className={`text-[10px] font-semibold uppercase tracking-[0.18em] ${
+            featured ? "text-primary-foreground/50" : "text-muted-foreground/70"
+          }`}
+        >
+          Also included
+        </p>
+        <p
+          className={`text-xs font-bold leading-tight ${
+            featured ? "text-primary-foreground" : "text-foreground"
+          }`}
+        >
+          Instant digital download
+        </p>
+      </div>
+
+      {/* Download icon */}
+      <Download
+        className={`h-4 w-4 shrink-0 ${
+          featured ? "text-primary-foreground/50" : "text-muted-foreground/50"
+        }`}
+      />
     </div>
   );
 }
 
+/* ─────────────────────────────────────────────────────────────────────
+   Cover Image — fixed h-52 so all three cards are identical in height
+───────────────────────────────────────────────────────────────────── */
+function CoverImage({ src, alt }) {
+  return (
+    <div className="flex h-52 w-full items-center justify-center">
+      <img
+        src={src}
+        alt={alt}
+        className="h-full w-full object-contain drop-shadow-xl"
+      />
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Edition Card
+───────────────────────────────────────────────────────────────────── */
+function EditionCard({ ed, index }) {
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+      className={`relative flex flex-col overflow-visible rounded-[2rem] border transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl ${
+        ed.featured
+          ? "border-primary/30 bg-primary text-primary-foreground shadow-lg shadow-primary/20"
+          : "border-border bg-card text-foreground shadow-sm"
+      }`}
+    >
+      {/* ── Badge ── */}
+      {ed.badge && (
+        <div className="absolute left-1/2 top-0 z-30 -translate-x-1/2 -translate-y-1/2">
+          <span className="flex items-center gap-1.5 rounded-full bg-red-600 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white shadow-md ring-2 ring-background">
+            {ed.badgeIcon}
+            {ed.badge}
+          </span>
+        </div>
+      )}
+
+      {/* ── Cover zone ── */}
+      <div
+        className={`overflow-hidden rounded-t-[2rem] px-8 pb-0 pt-9 ${
+          ed.featured ? "bg-primary" : "bg-muted/30"
+        }`}
+      >
+        <CoverImage src={ed.coverSrc} alt={ed.coverAlt} />
+      </div>
+
+      {/* ── Hairline ── */}
+      <div
+        className={`mx-6 h-px ${
+          ed.featured ? "bg-primary-foreground/15" : "bg-border"
+        }`}
+      />
+
+      {/* ── Body ── */}
+      <div className="flex flex-1 flex-col gap-4 px-7 py-6">
+
+        {/* Title + price row */}
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <p
+              className={`text-[10px] font-semibold uppercase tracking-[0.22em] ${
+                ed.featured ? "text-primary-foreground/50" : "text-muted-foreground"
+              }`}
+            >
+              {ed.title}
+            </p>
+            <p className="mt-0.5 font-display text-3xl font-black tracking-tight">
+              {ed.price}
+            </p>
+          </div>
+
+          {/* Edition icon pill */}
+          <div
+            className={`mt-1 shrink-0 rounded-xl p-2.5 ${
+              ed.featured ? "bg-primary-foreground/15" : "bg-muted"
+            }`}
+          >
+            {ed.icon}
+          </div>
+        </div>
+
+        {/* Headline */}
+        <p
+          className={`font-body text-sm font-semibold leading-snug ${
+            ed.featured ? "text-primary-foreground" : "text-foreground"
+          }`}
+        >
+          {ed.headline}
+        </p>
+
+        {/* Bullets */}
+        <ul className="space-y-2">
+          {ed.bullets.map((b, idx) => {
+            const isBonus =
+              !ed.featured &&
+              (b.toLowerCase().includes("instant digital download") ||
+                b.toLowerCase().includes("descarga digital"));
+            return (
+              <li
+                key={idx}
+                className={`flex items-start gap-2 font-body text-xs leading-5 ${
+                  isBonus
+                    ? "font-semibold text-red-500"
+                    : ed.featured
+                    ? "text-primary-foreground/75"
+                    : "text-muted-foreground"
+                }`}
+              >
+                {isBonus ? (
+                  <span className="mt-0.5 shrink-0 font-bold">+</span>
+                ) : (
+                  <Check
+                    className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${
+                      ed.featured
+                        ? "text-primary-foreground/60"
+                        : "text-muted-foreground/50"
+                    }`}
+                  />
+                )}
+                {b}
+              </li>
+            );
+          })}
+        </ul>
+
+        {/* Digital download included banner */}
+        {ed.hasDigital && <DigitalIncludedBanner featured={ed.featured} />}
+
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Note */}
+        <div
+          className={`rounded-2xl px-4 py-3 font-body text-[11px] leading-5 ${
+            ed.featured
+              ? "bg-primary-foreground/10 text-primary-foreground/65"
+              : "bg-muted/60 text-muted-foreground"
+          }`}
+        >
+          {ed.note}
+        </div>
+
+        {/* CTA button */}
+        <a
+          href={ed.paymentLink || "#order"}
+          target={ed.paymentLink ? "_blank" : undefined}
+          rel={ed.paymentLink ? "noreferrer" : undefined}
+          aria-disabled={!ed.paymentLink}
+          title={!ed.paymentLink ? ed.stripeLinkMissing : undefined}
+          onClick={!ed.paymentLink ? (e) => e.preventDefault() : undefined}
+          className={`inline-block w-full rounded-2xl px-5 py-4 text-center font-body text-sm font-bold tracking-wide transition-all duration-200 active:scale-[0.98] ${
+            ed.featured
+              ? "bg-primary-foreground text-primary shadow-md hover:opacity-90 hover:shadow-lg"
+              : "border border-border bg-card hover:border-primary hover:text-primary"
+          } ${!ed.paymentLink ? "cursor-not-allowed opacity-50" : ""}`}
+        >
+          {ed.cta}
+        </a>
+
+        <p
+          className={`mt-2.5 flex items-center justify-center gap-1.5 font-body text-[10px] ${
+            ed.featured ? "text-primary-foreground/60" : "text-muted-foreground/60"
+          }`}
+        >
+          <Shield className="h-3 w-3" />
+          Secure checkout
+        </p>
+      </div>
+    </motion.article>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────
+   Section
+───────────────────────────────────────────────────────────────────── */
 export default function EditionsSection() {
   const { lang } = useLang();
   const tx = t[lang];
@@ -130,7 +261,11 @@ export default function EditionsSection() {
       featured: true,
       badge: tx.digital_badge,
       badgeIcon: <Zap className="h-3 w-3" />,
-      visual: <IphoneMockup instantLabel={tx.digital_cta} />,
+      icon: <Zap className="h-4 w-4 opacity-75" />,
+      coverSrc: editionCovers.digital,
+      coverAlt: "Digital edition cover",
+      hasDigital: false,
+      stripeLinkMissing: tx.stripe_link_missing,
     },
     {
       id: "cd",
@@ -143,7 +278,11 @@ export default function EditionsSection() {
       paymentLink: getStripePaymentLink("cd"),
       featured: false,
       badge: null,
-      visual: <CdVisual />,
+      icon: <Disc3 className="h-4 w-4 opacity-75" />,
+      coverSrc: editionCovers.cd,
+      coverAlt: "CD edition cover",
+      hasDigital: true,
+      stripeLinkMissing: tx.stripe_link_missing,
     },
     {
       id: "vinyl",
@@ -157,17 +296,23 @@ export default function EditionsSection() {
       featured: false,
       badge: tx.vinyl_badge,
       badgeIcon: <Star className="h-3 w-3" />,
-      visual: <VinylVisual />,
+      icon: <Music className="h-4 w-4 opacity-75" />,
+      coverSrc: editionCovers.vinyl,
+      coverAlt: "Vinyl edition cover",
+      hasDigital: true,
+      stripeLinkMissing: tx.stripe_link_missing,
     },
   ];
 
   return (
-    <section id="editions" className="mx-auto max-w-7xl px-6 py-20 lg:px-10">
-      <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <section id="editions" className="mx-auto max-w-7xl px-6 py-24 lg:px-10">
+
+      {/* Header */}
+      <div className="mb-14 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <div className="font-body text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+          <p className="font-body text-xs font-semibold uppercase tracking-[0.26em] text-muted-foreground">
             {tx.editions_label}
-          </div>
+          </p>
           <h2 className="mt-3 font-display text-4xl font-black tracking-tight text-foreground md:text-5xl">
             {tx.editions_headline}
           </h2>
@@ -177,80 +322,10 @@ export default function EditionsSection() {
         </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      {/* Cards */}
+      <div className="grid items-stretch gap-5 lg:grid-cols-3">
         {editions.map((ed, i) => (
-          <motion.article
-            key={ed.id}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-            className={`relative overflow-hidden rounded-[2rem] border p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-xl ${
-              ed.featured
-                ? "border-primary/30 bg-primary text-primary-foreground"
-                : "border-border bg-card text-foreground"
-            }`}
-          >
-            {ed.badge && (
-              <div className="absolute right-5 top-5 flex items-center gap-1 rounded-full bg-red-600 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white shadow-lg">
-                {ed.badgeIcon}
-                {ed.badge}
-              </div>
-            )}
-
-            <div className={ed.featured ? "opacity-90" : ""}>{ed.visual}</div>
-
-            <div className="mt-2 font-body text-xs font-semibold uppercase tracking-[0.2em] opacity-60">
-              {ed.title}
-            </div>
-
-            <div className="mt-2 font-display text-4xl font-black tracking-tight">
-              {ed.price}
-            </div>
-
-            <p className={`mt-3 font-body text-sm font-semibold ${ed.featured ? "text-primary-foreground" : "text-foreground"}`}>
-              {ed.headline}
-            </p>
-
-            <ul className={`mt-3 space-y-1.5 font-body text-xs leading-6 ${ed.featured ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
-              {ed.bullets.map((b, idx) => {
-                const isDigitalBonus = !ed.featured && (b.toLowerCase().includes("instant digital download") || b.toLowerCase().includes("descarga digital"));
-                return (
-                  <li key={idx} className={`flex items-start gap-2 ${isDigitalBonus ? "text-red-500 font-semibold" : ""}`}>
-                    {isDigitalBonus
-                      ? <span className="mt-0.5 shrink-0 font-bold">+</span>
-                      : <Check className="h-3 w-3 mt-1 shrink-0 opacity-70" />
-                    }
-                    {b}
-                  </li>
-                );
-              })}
-            </ul>
-
-            <div className={`mt-5 rounded-2xl px-4 py-3 font-body text-xs leading-6 ${
-              ed.featured
-                ? "bg-primary-foreground/10 text-primary-foreground/75"
-                : "bg-secondary text-muted-foreground"
-            }`}>
-              {ed.note}
-            </div>
-
-            <a
-              href={ed.paymentLink || "#order"}
-              target={ed.paymentLink ? "_blank" : undefined}
-              rel={ed.paymentLink ? "noreferrer" : undefined}
-              aria-disabled={!ed.paymentLink}
-              title={!ed.paymentLink ? tx.stripe_link_missing : undefined}
-              onClick={!ed.paymentLink ? (event) => event.preventDefault() : undefined}
-              className={`mt-6 inline-block w-full rounded-2xl px-5 py-3.5 text-center font-body text-sm font-semibold transition ${
-                ed.featured
-                  ? "bg-primary-foreground text-primary shadow-lg hover:shadow-xl"
-                  : "border border-border bg-card hover:border-primary hover:text-primary"
-              } ${!ed.paymentLink ? "cursor-not-allowed opacity-50" : ""}`}
-            >
-              {ed.cta}
-            </a>
-          </motion.article>
+          <EditionCard key={ed.id} ed={ed} index={i} />
         ))}
       </div>
     </section>

@@ -10,8 +10,8 @@ export const t = {
 
     // Hero
     hero_badge: "New · 3 formats available",
-    hero_subtitle: "The unforgettable music of this adventure.",
-    hero_body: "Music & Lyrics by Daniel Astudillo Estrella. Available as Digital Download, CD and limited Vinyl Edition.",
+    hero_subtitle: "A cinematic arrival. Unforgettable Mexico.",
+    hero_body: "At the beginning of the biggest adventure of a lifetime.",
     hero_cta_order: "Order Now",
     hero_cta_editions: "View Editions",
     hero_format_digital_sub: "Available immediately",
@@ -24,7 +24,9 @@ export const t = {
     tracklist_label: "Tracklist",
     tracklist_headline: "12 Tracks",
     tracklist_body: "The complete Hola Gringo tracklist — a cinematic journey through Mexico.",
-    tracklist_click: "Click a track to view details",
+    tracklist_click: "Click a track to play a 15-second preview from the middle of the song",
+    tracklist_preview: "Play preview",
+    tracklist_playing: "Playing preview",
 
     // Track modal
     modal_lyrics: "Lyrics",
@@ -115,8 +117,8 @@ export const t = {
 
     // Hero
     hero_badge: "Nuevo · 3 formatos disponibles",
-    hero_subtitle: "La música inolvidable de esta aventura.",
-    hero_body: "Música y letras por Daniel Astudillo Estrella. Disponible como descarga digital, CD y edición de vinilo limitada.",
+    hero_subtitle: "A cinematic arrival. Unforgettable Mexico.",
+    hero_body: "At the beginning of the biggest adventure of a lifetime.",
     hero_cta_order: "Pedir ahora",
     hero_cta_editions: "Ver ediciones",
     hero_format_digital_sub: "Disponible inmediatamente",
@@ -129,7 +131,9 @@ export const t = {
     tracklist_label: "Lista de canciones",
     tracklist_headline: "12 Canciones",
     tracklist_body: "La lista completa de Hola Gringo — un viaje cinematográfico por México.",
-    tracklist_click: "Haz clic en una canción para ver detalles",
+    tracklist_click: "Haz clic en una cancion para escuchar un preview de 15 segundos desde el centro de la cancion",
+    tracklist_preview: "Reproducir preview",
+    tracklist_playing: "Reproduciendo preview",
 
     // Track modal
     modal_lyrics: "Letra",

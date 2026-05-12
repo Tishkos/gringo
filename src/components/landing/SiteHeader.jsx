@@ -11,38 +11,32 @@ export default function SiteHeader() {
   const tx = t[lang];
 
   const navLinks = [
-    { label: tx.nav_home, href: "#home" },
-    { label: tx.nav_music, href: "#music" },
-    { label: tx.nav_lyrics, href: "#lyrics" },
-    { label: tx.nav_editions, href: "#editions" },
-    { label: tx.nav_order, href: "#order" },
-    { label: tx.nav_terms, href: "/terms", isPage: true },
+    { label: tx.nav_home, to: "/#home" },
+    { label: tx.nav_music, to: "/#music" },
+    { label: tx.nav_lyrics, to: "/#lyrics" },
+    { label: tx.nav_editions, to: "/#editions" },
+    { label: tx.nav_order, to: "/#order" },
+    { label: tx.nav_terms, to: "/terms" },
   ];
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
-        <a href="#home" className="group">
+        <Link to="/#home" className="group">
           <div className="font-display text-2xl font-black tracking-[0.14em] text-primary">
             HOLA GRINGO
           </div>
           <div className="font-body text-[10px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
             Mexico · Soundtrack
           </div>
-        </a>
+        </Link>
 
         <nav className="hidden gap-8 font-body text-sm font-medium md:flex">
-          {navLinks.map((l) =>
-            l.isPage ? (
-              <Link key={l.href} to={l.href} className="text-foreground/70 transition-colors hover:text-primary">
-                {l.label}
-              </Link>
-            ) : (
-              <a key={l.href} href={l.href} className="text-foreground/70 transition-colors hover:text-primary">
-                {l.label}
-              </a>
-            )
-          )}
+          {navLinks.map((l) => (
+            <Link key={l.to} to={l.to} className="text-foreground/70 transition-colors hover:text-primary">
+              {l.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -77,27 +71,16 @@ export default function SiteHeader() {
             className="overflow-hidden border-t border-border/40 bg-background md:hidden"
           >
             <div className="flex flex-col gap-1 px-6 py-4">
-              {navLinks.map((l) =>
-                l.isPage ? (
-                  <Link
-                    key={l.href}
-                    to={l.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-xl px-4 py-3 font-body text-sm font-medium text-foreground/80 transition hover:bg-secondary"
-                  >
-                    {l.label}
-                  </Link>
-                ) : (
-                  <a
-                    key={l.href}
-                    href={l.href}
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-xl px-4 py-3 font-body text-sm font-medium text-foreground/80 transition hover:bg-secondary"
-                  >
-                    {l.label}
-                  </a>
-                )
-              )}
+              {navLinks.map((l) => (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-xl px-4 py-3 font-body text-sm font-medium text-foreground/80 transition hover:bg-secondary"
+                >
+                  {l.label}
+                </Link>
+              ))}
             </div>
           </motion.nav>
         )}
