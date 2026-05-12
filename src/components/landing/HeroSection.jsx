@@ -31,8 +31,22 @@ export default function HeroSection() {
           </div>
 
           <div className="space-y-4">
-            <h1 className="font-display text-5xl font-black leading-[0.92] tracking-tight text-primary sm:text-6xl lg:text-7xl">
-              Hola Gringo
+            <h1
+              className="select-none text-7xl leading-[0.86] tracking-normal sm:text-8xl lg:text-[9rem]"
+              style={{ fontFamily: "'Bebas Neue', sans-serif" }}
+            >
+              <span
+                className="block text-transparent"
+                style={{ WebkitTextStroke: "2px hsl(var(--primary))" }}
+              >
+                Hola
+              </span>
+              <span
+                className="block text-transparent"
+                style={{ WebkitTextStroke: "2px hsl(var(--primary))" }}
+              >
+                Gringo
+              </span>
             </h1>
             <p className="max-w-lg font-display text-xl italic leading-relaxed text-foreground/70 sm:text-2xl">
               {tx.hero_subtitle}

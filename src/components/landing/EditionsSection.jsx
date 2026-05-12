@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Star, Zap, Check, Download, Disc3, Music, Shield } from "lucide-react";
+import { Star, Zap, Check, Download, Disc3, Music, Shield, ArrowRight } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import { t } from "@/lib/translations";
 import { getStripePaymentLink } from "@/lib/stripeLinks";
@@ -219,13 +219,14 @@ function EditionCard({ ed, index }) {
           aria-disabled={!ed.paymentLink}
           title={!ed.paymentLink ? ed.stripeLinkMissing : undefined}
           onClick={!ed.paymentLink ? (e) => e.preventDefault() : undefined}
-          className={`inline-block w-full rounded-2xl px-5 py-4 text-center font-body text-sm font-bold tracking-wide transition-all duration-200 active:scale-[0.98] ${
+          className={`group inline-flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-5 text-center font-body text-sm font-bold tracking-wide transition-all duration-200 active:scale-[0.98] ${
             ed.featured
               ? "bg-primary-foreground text-primary shadow-md hover:opacity-90 hover:shadow-lg"
               : "border border-border bg-card hover:border-primary hover:text-primary"
           } ${!ed.paymentLink ? "cursor-not-allowed opacity-50" : ""}`}
         >
           {ed.cta}
+          <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
         </a>
 
         <p
@@ -234,7 +235,7 @@ function EditionCard({ ed, index }) {
           }`}
         >
           <Shield className="h-3 w-3" />
-          Secure checkout
+          Secure checkout · Instant delivery
         </p>
       </div>
     </motion.article>
