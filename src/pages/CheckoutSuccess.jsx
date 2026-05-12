@@ -62,19 +62,19 @@ export default function CheckoutSuccess() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <section className="mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center px-6 py-16 text-center">
-        <div className="font-body text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+        <div className="rounded-full bg-emerald-600 px-6 py-3 font-body text-sm font-black uppercase tracking-[0.2em] text-white shadow-xl shadow-emerald-600/25 md:text-base">
           {tx.checkout_label}
         </div>
 
-        <div className="mt-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground">
+        <div className="mt-8 flex h-28 w-28 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xl shadow-emerald-600/30 ring-8 ring-emerald-100 md:h-32 md:w-32">
           {state.status === "loading" ? (
-            <Loader2 className="h-8 w-8 animate-spin" />
+            <Loader2 className="h-12 w-12 animate-spin md:h-14 md:w-14" />
           ) : (
-            <CheckCircle2 className="h-8 w-8" />
+            <CheckCircle2 className="h-14 w-14 md:h-16 md:w-16" />
           )}
         </div>
 
-        <h1 className="mt-6 font-display text-4xl font-black tracking-tight md:text-5xl">
+        <h1 className="mt-8 font-display text-5xl font-black tracking-tight text-emerald-700 md:text-7xl">
           {state.status === "ready" ? tx.checkout_title : tx.checkout_loading}
         </h1>
 
@@ -98,23 +98,23 @@ export default function CheckoutSuccess() {
 
         {state.status === "ready" && downloadUrl && (
           <>
-            <p className="mt-4 max-w-xl font-body text-sm leading-7 text-muted-foreground">
+            <p className="mt-6 max-w-2xl font-body text-lg font-semibold leading-8 text-foreground md:text-xl md:leading-9">
               {tx.checkout_body}
             </p>
 
-            <div className="mt-8 rounded-2xl border border-border bg-card p-5 shadow-lg">
-              <QRCodeSVG value={downloadUrl} size={196} includeMargin />
+            <div className="mt-10 rounded-[2rem] border-2 border-emerald-200 bg-white p-6 shadow-2xl shadow-emerald-900/10">
+              <QRCodeSVG value={downloadUrl} size={232} includeMargin />
             </div>
 
-            <p className="mt-4 font-body text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+            <p className="mt-5 max-w-xl font-body text-sm font-bold uppercase tracking-[0.14em] text-emerald-700">
               {tx.checkout_once_note}
             </p>
 
             <a
               href={downloadUrl}
-              className="mt-8 inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-4 font-body text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition hover:shadow-xl"
+              className="mt-9 inline-flex items-center justify-center gap-3 rounded-full bg-emerald-600 px-10 py-5 font-body text-lg font-black uppercase tracking-[0.08em] text-white shadow-2xl shadow-emerald-600/30 transition hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-emerald-700/35"
             >
-              <Download className="h-4 w-4" />
+              <Download className="h-6 w-6" />
               {tx.checkout_download}
             </a>
           </>

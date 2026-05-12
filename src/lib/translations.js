@@ -96,13 +96,13 @@ export const t = {
 
     // Checkout success
     checkout_label: "Payment Complete",
-    checkout_title: "Your download is ready",
+    checkout_title: "Your full album is ready",
     checkout_loading: "Confirming your payment...",
     checkout_missing: "Missing checkout session. Please return from Stripe after payment.",
     checkout_error: "We could not prepare your download yet. If payment succeeded, please contact support with your receipt.",
-    checkout_body: "Scan the QR code or use the button below to download the album.",
-    checkout_once_note: "This secure download link works once.",
-    checkout_download: "Download Album",
+    checkout_body: "Your payment is complete. The QR code below is your backup, and you can download the full album now by pressing Download Now.",
+    checkout_once_note: "Keep this page open until your download has started. This secure download link works once.",
+    checkout_download: "Download Now",
     checkout_return_home: "Back to Home",
   },
 
@@ -203,13 +203,13 @@ export const t = {
 
     // Checkout success
     checkout_label: "Pago completado",
-    checkout_title: "Tu descarga esta lista",
+    checkout_title: "Tu album completo esta listo",
     checkout_loading: "Confirmando tu pago...",
     checkout_missing: "Falta la sesion de pago. Vuelve desde Stripe despues del pago.",
     checkout_error: "No pudimos preparar tu descarga todavia. Si el pago fue exitoso, contacta soporte con tu recibo.",
-    checkout_body: "Escanea el codigo QR o usa el boton para descargar el album.",
-    checkout_once_note: "Este enlace seguro funciona una sola vez.",
-    checkout_download: "Descargar album",
+    checkout_body: "Tu pago esta completo. El codigo QR de abajo es tu respaldo, y puedes descargar el album completo ahora presionando Descargar ahora.",
+    checkout_once_note: "Mantén esta pagina abierta hasta que empiece la descarga. Este enlace seguro funciona una sola vez.",
+    checkout_download: "Descargar ahora",
     checkout_return_home: "Volver al inicio",
   },
 };
