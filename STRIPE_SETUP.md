@@ -55,10 +55,23 @@ ALLOWED_PRICE_IDS=price_digital,price_cd,price_vinyl
 DIGITAL_DOWNLOAD_FILE=private-downloads/la-inoficial-digital.zip
 DOWNLOAD_FILE_NAME=Hola Gringo - Digital Album.zip
 DOWNLOAD_TOKEN_TTL_HOURS=168
+DOWNLOAD_MAX_DOWNLOADS=3
 ENABLE_LOCAL_CHECKOUT_TESTS=false
+SMTP_HOST=mail.spacemail.com
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_USER=info@holagringo.media
+SMTP_PASS=your_email_password
+SMTP_FROM="Hola Gringo <info@holagringo.media>"
+DOWNLOAD_EMAIL_REPLY_TO=info@holagringo.media
+DOWNLOAD_EMAIL_SUBJECT=Your Hola Gringo download is ready
 ```
 
 Add all Stripe Price IDs that should receive the digital download. Include CD and Vinyl if those products include instant digital download.
+
+`DOWNLOAD_MAX_DOWNLOADS=3` gives each paid customer a small backup allowance if the first download fails. The link still expires after `DOWNLOAD_TOKEN_TTL_HOURS`.
+
+The SMTP settings send the same private backup link and QR code to the Stripe customer email. Keep `SMTP_PASS` only in `server/.env` or `.env.production`; do not commit it.
 
 ## 5. Run locally
 
@@ -103,6 +116,7 @@ checkout.session.async_payment_succeeded
 2. Stripe opens the Payment Link.
 3. After payment, Stripe redirects back to `/checkout/success?session_id=...`.
 4. The server verifies the Checkout Session with Stripe.
-5. The server creates a one-time download token.
-6. The success page shows a QR code and download button.
-7. The token is consumed after one download.
+5. The server creates a private expiring download token.
+6. The server emails the same backup link and QR code to the Stripe customer email.
+7. The success page shows a QR code and download button.
+8. The token is limited by `DOWNLOAD_MAX_DOWNLOADS` and expires after `DOWNLOAD_TOKEN_TTL_HOURS`.
