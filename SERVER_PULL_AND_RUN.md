@@ -6,9 +6,9 @@ production server.
 ## Important
 
 `.env.production` is ignored by git, so `git pull` should not overwrite your
-live Stripe secrets.
+live Stripe or email secrets.
 
-Do not paste `sk_live_...` or `whsec_...` into chat, GitHub, or docs.
+Do not paste `sk_live_...`, `whsec_...`, or mailbox passwords into GitHub or docs.
 
 ## 1. SSH into the server
 
@@ -106,7 +106,7 @@ curl http://localhost:4242/api/health
 Expected:
 
 ```json
-{"ok":true,"downloadFileConfigured":true,"stripeConfigured":true,"webhookConfigured":true}
+{"ok":true,"downloadFileConfigured":true,"stripeConfigured":true,"webhookConfigured":true,"emailConfigured":true}
 ```
 
 ## 7. Check logs
@@ -143,6 +143,7 @@ https://holagringo.media/checkout/success?session_id=...
 
 - The success page shows the big green confirmation, QR code, and Download Now
   button.
+- The buyer receives the backup email with the same private link and QR code.
 
 ## Quick command list
 

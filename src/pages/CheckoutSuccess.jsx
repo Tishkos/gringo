@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
-import { CheckCircle2, Download, Home, Loader2 } from "lucide-react";
+import { CheckCircle2, Download, Home, Loader2, MailCheck } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import { t } from "@/lib/translations";
 
@@ -61,20 +61,20 @@ export default function CheckoutSuccess() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <section className="mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center px-6 py-16 text-center">
-        <div className="rounded-full bg-emerald-600 px-6 py-3 font-body text-sm font-black uppercase tracking-[0.2em] text-white shadow-xl shadow-emerald-600/25 md:text-base">
+      <section className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center px-5 py-8 text-center">
+        <div className="rounded-full bg-emerald-600 px-4 py-2 font-body text-xs font-black uppercase tracking-[0.16em] text-white shadow-xl shadow-emerald-600/25 md:text-sm">
           {tx.checkout_label}
         </div>
 
-        <div className="mt-8 flex h-28 w-28 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xl shadow-emerald-600/30 ring-8 ring-emerald-100 md:h-32 md:w-32">
+        <div className="mt-5 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xl shadow-emerald-600/30 ring-4 ring-emerald-100 md:h-24 md:w-24">
           {state.status === "loading" ? (
-            <Loader2 className="h-12 w-12 animate-spin md:h-14 md:w-14" />
+            <Loader2 className="h-9 w-9 animate-spin md:h-10 md:w-10" />
           ) : (
-            <CheckCircle2 className="h-14 w-14 md:h-16 md:w-16" />
+            <CheckCircle2 className="h-10 w-10 md:h-12 md:w-12" />
           )}
         </div>
 
-        <h1 className="mt-8 font-display text-5xl font-black tracking-tight text-emerald-700 md:text-7xl">
+        <h1 className="mt-5 font-display text-3xl font-black tracking-tight text-emerald-700 md:text-5xl">
           {state.status === "ready" ? tx.checkout_title : tx.checkout_loading}
         </h1>
 
@@ -98,31 +98,38 @@ export default function CheckoutSuccess() {
 
         {state.status === "ready" && downloadUrl && (
           <>
-            <p className="mt-6 max-w-2xl font-body text-lg font-semibold leading-8 text-foreground md:text-xl md:leading-9">
+            <p className="mt-3 max-w-lg font-body text-sm font-semibold leading-6 text-foreground md:text-base md:leading-7">
               {tx.checkout_body}
             </p>
 
-            <div className="mt-10 rounded-[2rem] border-2 border-emerald-200 bg-white p-6 shadow-2xl shadow-emerald-900/10">
-              <QRCodeSVG value={downloadUrl} size={232} includeMargin />
+            <div className="mt-4 rounded-2xl border-2 border-emerald-200 bg-white p-3 shadow-2xl shadow-emerald-900/10">
+              <QRCodeSVG value={downloadUrl} size={152} includeMargin />
             </div>
 
-            <p className="mt-5 max-w-xl font-body text-sm font-bold uppercase tracking-[0.14em] text-emerald-700">
+            <p className="mt-3 max-w-lg font-body text-xs font-bold uppercase tracking-[0.1em] text-emerald-700">
               {tx.checkout_once_note}
             </p>
 
             <a
               href={downloadUrl}
-              className="mt-9 inline-flex items-center justify-center gap-3 rounded-full bg-emerald-600 px-10 py-5 font-body text-lg font-black uppercase tracking-[0.08em] text-white shadow-2xl shadow-emerald-600/30 transition hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-emerald-700/35"
+              className="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-emerald-600 px-7 py-3.5 font-body text-sm font-black uppercase tracking-[0.08em] text-white shadow-2xl shadow-emerald-600/30 transition hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-emerald-700/35 md:text-base"
             >
-              <Download className="h-6 w-6" />
+              <Download className="h-5 w-5" />
               {tx.checkout_download}
             </a>
+
+            <div className="mt-4 flex max-w-lg items-start gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-left shadow-lg shadow-emerald-900/5">
+              <MailCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-700" />
+              <p className="font-body text-xs font-bold leading-5 text-emerald-900">
+                {tx.checkout_email_note}
+              </p>
+            </div>
           </>
         )}
 
         <Link
           to="/"
-          className="mt-6 inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card px-5 py-3 font-body text-sm font-semibold text-foreground transition hover:border-primary hover:text-primary"
+          className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-card px-4 py-2 font-body text-xs font-semibold text-foreground transition hover:border-primary hover:text-primary"
         >
           <Home className="h-4 w-4" />
           {tx.checkout_return_home}

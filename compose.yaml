@@ -22,6 +22,15 @@ services:
       DIGITAL_DOWNLOAD_FILE: private-downloads/la-inoficial-digital.zip
       DOWNLOAD_FILE_NAME: ${DOWNLOAD_FILE_NAME:-Hola Gringo - Digital Album.zip}
       DOWNLOAD_TOKEN_TTL_HOURS: ${DOWNLOAD_TOKEN_TTL_HOURS:-168}
+      DOWNLOAD_MAX_DOWNLOADS: ${DOWNLOAD_MAX_DOWNLOADS:-3}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT:-465}
+      SMTP_SECURE: ${SMTP_SECURE:-true}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_FROM: "${SMTP_FROM:-Hola Gringo <info@holagringo.media>}"
+      DOWNLOAD_EMAIL_REPLY_TO: ${DOWNLOAD_EMAIL_REPLY_TO:-info@holagringo.media}
+      DOWNLOAD_EMAIL_SUBJECT: "${DOWNLOAD_EMAIL_SUBJECT:-Your Hola Gringo download is ready}"
       ENABLE_LOCAL_CHECKOUT_TESTS: "false"
     volumes:
       - ./private-downloads:/app/private-downloads

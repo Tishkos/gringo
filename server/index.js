@@ -4,10 +4,14 @@ import express from "express";
 import fs from "node:fs";
 import path from "node:path";
 import Stripe from "stripe";
+import { isDownloadEmailConfigured, sendDownloadEmail } from "./email.js";
 import {
+  claimFulfillmentEmail,
   consumeToken,
   createOrGetFulfillment,
   getFulfillmentBySession,
+  markFulfillmentEmailFailed,
+  markFulfillmentEmailSent,
 } from "./store.js";
 
 dotenv.config({ path: "server/.env" });
@@ -47,6 +51,8 @@ function fulfillmentResponse(fulfillment) {
     email: fulfillment.email,
     lineItems: fulfillment.lineItems,
     expiresAt: fulfillment.expiresAt,
+    maxDownloads: fulfillment.maxDownloads,
+    emailDelivery: fulfillment.emailDelivery || null,
     downloadUrl: getDownloadUrl(fulfillment.token),
   };
 }
@@ -75,20 +81,46 @@ function hasAllowedDownload(lineItems) {
   return lineItems.some((item) => allowedPriceIds.includes(item.priceId));
 }
 
+async function sendFulfillmentEmailIfNeeded(fulfillment) {
+  if (!fulfillment.email || !isDownloadEmailConfigured()) {
+    return;
+  }
+
+  const claimedFulfillment = await claimFulfillmentEmail(fulfillment.sessionId);
+
+  if (!claimedFulfillment) {
+    return;
+  }
+
+  try {
+    await sendDownloadEmail({
+      to: claimedFulfillment.email,
+      downloadUrl: getDownloadUrl(claimedFulfillment.token),
+      expiresAt: claimedFulfillment.expiresAt,
+      lineItems: claimedFulfillment.lineItems,
+    });
+    await markFulfillmentEmailSent(claimedFulfillment.sessionId);
+  } catch (error) {
+    console.error("Download email failed:", error);
+    await markFulfillmentEmailFailed(claimedFulfillment.sessionId, error.message);
+  }
+}
+
 async function fulfillCheckoutSession(sessionId) {
-  if (!stripe) {
-    if (isLocalCheckoutTestEnabled() && sessionId.startsWith("local_test_")) {
-      const fulfillment = await getFulfillmentBySession(sessionId);
+  if (isLocalCheckoutTestEnabled() && sessionId.startsWith("local_test_")) {
+    const fulfillment = await getFulfillmentBySession(sessionId);
 
-      if (!fulfillment) {
-        const error = new Error("Local test checkout session not found.");
-        error.statusCode = 404;
-        throw error;
-      }
-
-      return fulfillmentResponse(fulfillment);
+    if (!fulfillment) {
+      const error = new Error("Local test checkout session not found.");
+      error.statusCode = 404;
+      throw error;
     }
 
+    await sendFulfillmentEmailIfNeeded(fulfillment);
+    return fulfillmentResponse(fulfillment);
+  }
+
+  if (!stripe) {
     const error = new Error("STRIPE_SECRET_KEY is not configured.");
     error.statusCode = 500;
     throw error;
@@ -120,6 +152,8 @@ async function fulfillCheckoutSession(sessionId) {
     lineItems,
   });
 
+  await sendFulfillmentEmailIfNeeded(fulfillment);
+
   return {
     status: session.status,
     paymentStatus: session.payment_status,
@@ -127,6 +161,8 @@ async function fulfillCheckoutSession(sessionId) {
     email: fulfillment.email,
     lineItems: fulfillment.lineItems,
     expiresAt: fulfillment.expiresAt,
+    maxDownloads: fulfillment.maxDownloads,
+    emailDelivery: fulfillment.emailDelivery || null,
     downloadUrl: getDownloadUrl(fulfillment.token),
   };
 }
@@ -190,6 +226,7 @@ app.get("/api/health", (_request, response) => {
     downloadFileConfigured: Boolean(process.env.DIGITAL_DOWNLOAD_FILE),
     stripeConfigured: Boolean(stripe),
     webhookConfigured: Boolean(process.env.STRIPE_WEBHOOK_SECRET),
+    emailConfigured: isDownloadEmailConfigured(),
   });
 });
 

@@ -34,6 +34,51 @@ function createExpiry() {
   return new Date(Date.now() + ttlHours * 60 * 60 * 1000).toISOString();
 }
 
+function getMaxDownloads() {
+  const maxDownloads = Number.parseInt(process.env.DOWNLOAD_MAX_DOWNLOADS || "3", 10);
+  return Number.isFinite(maxDownloads) && maxDownloads > 0 ? maxDownloads : 3;
+}
+
+function emptyEmailDelivery() {
+  return {
+    pendingAt: null,
+    sentAt: null,
+    failedAt: null,
+    error: null,
+  };
+}
+
+function getTokenRecord(store, fulfillment) {
+  return fulfillment?.token ? store.tokens[fulfillment.token] : null;
+}
+
+function updateEmailDelivery(store, sessionId, updater) {
+  const fulfillment = store.sessions[sessionId];
+
+  if (!fulfillment) {
+    return null;
+  }
+
+  fulfillment.emailDelivery = {
+    ...emptyEmailDelivery(),
+    ...(fulfillment.emailDelivery || {}),
+  };
+
+  updater(fulfillment.emailDelivery);
+
+  const tokenRecord = getTokenRecord(store, fulfillment);
+
+  if (tokenRecord) {
+    tokenRecord.emailDelivery = {
+      ...emptyEmailDelivery(),
+      ...(tokenRecord.emailDelivery || {}),
+      ...fulfillment.emailDelivery,
+    };
+  }
+
+  return fulfillment;
+}
+
 export async function createOrGetFulfillment({ sessionId, email, lineItems }) {
   const store = await readStore();
 
@@ -52,6 +97,8 @@ export async function createOrGetFulfillment({ sessionId, email, lineItems }) {
     lineItems,
     createdAt,
     expiresAt,
+    maxDownloads: getMaxDownloads(),
+    emailDelivery: emptyEmailDelivery(),
   };
 
   store.sessions[sessionId] = fulfillment;
@@ -60,10 +107,11 @@ export async function createOrGetFulfillment({ sessionId, email, lineItems }) {
     email,
     lineItems,
     downloads: 0,
-    maxDownloads: 1,
+    maxDownloads: fulfillment.maxDownloads,
     createdAt,
     expiresAt,
     usedAt: null,
+    emailDelivery: emptyEmailDelivery(),
   };
 
   await writeStore(store);
@@ -73,6 +121,63 @@ export async function createOrGetFulfillment({ sessionId, email, lineItems }) {
 export async function getFulfillmentBySession(sessionId) {
   const store = await readStore();
   return store.sessions[sessionId] || null;
+}
+
+export async function claimFulfillmentEmail(sessionId) {
+  const store = await readStore();
+  let claimed = false;
+  const fulfillment = updateEmailDelivery(store, sessionId, (emailDelivery) => {
+    if (emailDelivery.sentAt || emailDelivery.pendingAt) {
+      return;
+    }
+
+    emailDelivery.pendingAt = new Date().toISOString();
+    emailDelivery.failedAt = null;
+    emailDelivery.error = null;
+    claimed = true;
+  });
+
+  if (!fulfillment || !claimed) {
+    return null;
+  }
+
+  await writeStore(store);
+  return fulfillment;
+}
+
+export async function markFulfillmentEmailSent(sessionId) {
+  const store = await readStore();
+  const sentAt = new Date().toISOString();
+  const fulfillment = updateEmailDelivery(store, sessionId, (emailDelivery) => {
+    emailDelivery.pendingAt = null;
+    emailDelivery.sentAt = sentAt;
+    emailDelivery.failedAt = null;
+    emailDelivery.error = null;
+  });
+
+  if (!fulfillment) {
+    return null;
+  }
+
+  await writeStore(store);
+  return fulfillment;
+}
+
+export async function markFulfillmentEmailFailed(sessionId, errorMessage) {
+  const store = await readStore();
+  const failedAt = new Date().toISOString();
+  const fulfillment = updateEmailDelivery(store, sessionId, (emailDelivery) => {
+    emailDelivery.pendingAt = null;
+    emailDelivery.failedAt = failedAt;
+    emailDelivery.error = errorMessage;
+  });
+
+  if (!fulfillment) {
+    return null;
+  }
+
+  await writeStore(store);
+  return fulfillment;
 }
 
 export async function consumeToken(token) {

@@ -11,9 +11,10 @@ https://holagringo.media/checkout/success?session_id={CHECKOUT_SESSION_ID}
 1. Add real Stripe secrets on the server.
 2. Add the Stripe Price IDs to `ALLOWED_PRICE_IDS`.
 3. Put the album ZIP on the server at `private-downloads/la-inoficial-digital.zip`.
-4. Run the Docker app behind HTTPS for `holagringo.media`.
-5. Create the Stripe production webhook endpoint.
-6. Test a Stripe payment end to end.
+4. Add the SMTP email password to `.env.production`.
+5. Run the Docker app behind HTTPS for `holagringo.media`.
+6. Create the Stripe production webhook endpoint.
+7. Test a Stripe payment end to end.
 
 ## Server Env
 
@@ -26,6 +27,14 @@ CLIENT_ORIGIN=https://holagringo.media
 PUBLIC_BASE_URL=https://holagringo.media
 VITE_API_BASE_URL=
 ENABLE_LOCAL_CHECKOUT_TESTS=false
+SMTP_HOST=mail.spacemail.com
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_USER=info@holagringo.media
+SMTP_PASS=your_email_password
+SMTP_FROM="Hola Gringo <info@holagringo.media>"
+DOWNLOAD_EMAIL_REPLY_TO=info@holagringo.media
+DOWNLOAD_EMAIL_SUBJECT=Your Hola Gringo download is ready
 ```
 
 `VITE_API_BASE_URL` is intentionally blank in production because the frontend and API are served from the same domain.
@@ -111,5 +120,5 @@ ALLOWED_PRICE_IDS=price_123_digital,price_456_cd,price_789_vinyl
 3. Pay with Stripe test card `4242 4242 4242 4242`.
 4. Confirm Stripe redirects to `/checkout/success?session_id=...`.
 5. Confirm the QR/download button appears.
-6. Download once.
-7. Refresh or reuse the same download link and confirm it is blocked.
+6. Confirm the buyer receives the backup email with the private link and QR code.
+7. Download the album and confirm the link stops working after `DOWNLOAD_MAX_DOWNLOADS` attempts.
