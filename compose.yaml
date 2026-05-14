@@ -31,6 +31,7 @@ services:
       SMTP_FROM: "${SMTP_FROM:-Hola Gringo <info@holagringo.media>}"
       DOWNLOAD_EMAIL_REPLY_TO: ${DOWNLOAD_EMAIL_REPLY_TO:-info@holagringo.media}
       DOWNLOAD_EMAIL_SUBJECT: "${DOWNLOAD_EMAIL_SUBJECT:-Your Hola Gringo download is ready}"
+      DOWNLOAD_EMAIL_PRODUCT_IMAGE: ${DOWNLOAD_EMAIL_PRODUCT_IMAGE:-dist/covers/digital-edition-transparent.png}
       ENABLE_LOCAL_CHECKOUT_TESTS: "false"
     volumes:
       - ./private-downloads:/app/private-downloads

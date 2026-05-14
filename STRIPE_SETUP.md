@@ -65,13 +65,14 @@ SMTP_PASS=your_email_password
 SMTP_FROM="Hola Gringo <info@holagringo.media>"
 DOWNLOAD_EMAIL_REPLY_TO=info@holagringo.media
 DOWNLOAD_EMAIL_SUBJECT=Your Hola Gringo download is ready
+DOWNLOAD_EMAIL_PRODUCT_IMAGE=dist/covers/digital-edition-transparent.png
 ```
 
 Add all Stripe Price IDs that should receive the digital download. Include CD and Vinyl if those products include instant digital download.
 
 `DOWNLOAD_MAX_DOWNLOADS=3` gives each paid customer a small backup allowance if the first download fails. The link still expires after `DOWNLOAD_TOKEN_TTL_HOURS`.
 
-The SMTP settings send the same private backup link and QR code to the Stripe customer email. Keep `SMTP_PASS` only in `server/.env` or `.env.production`; do not commit it.
+The SMTP settings send the same private backup link, QR code, and product artwork to the Stripe customer email. Keep `SMTP_PASS` only in `server/.env` or `.env.production`; do not commit it.
 
 ## 5. Run locally
 

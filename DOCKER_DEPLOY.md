@@ -35,6 +35,7 @@ SMTP_PASS=your_email_password
 SMTP_FROM="Hola Gringo <info@holagringo.media>"
 DOWNLOAD_EMAIL_REPLY_TO=info@holagringo.media
 DOWNLOAD_EMAIL_SUBJECT=Your Hola Gringo download is ready
+DOWNLOAD_EMAIL_PRODUCT_IMAGE=dist/covers/digital-edition-transparent.png
 ```
 
 `VITE_API_BASE_URL` is intentionally blank in production because the frontend and API are served from the same domain.

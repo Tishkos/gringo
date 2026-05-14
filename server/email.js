@@ -1,7 +1,10 @@
 import nodemailer from "nodemailer";
+import fs from "node:fs/promises";
+import path from "node:path";
 import QRCode from "qrcode";
 
 const DEFAULT_SMTP_PORT = 465;
+const PRODUCT_IMAGE_CID = "product-art";
 
 let transporter = null;
 
@@ -52,6 +55,35 @@ function getLineItemLabel(lineItems) {
   return names.length > 0 ? names.join(", ") : "Hola Gringo digital album";
 }
 
+function getProductImageCandidates() {
+  return [
+    process.env.DOWNLOAD_EMAIL_PRODUCT_IMAGE,
+    "dist/covers/digital-edition-transparent.png",
+    "public/covers/digital-edition-transparent.png",
+  ].filter(Boolean);
+}
+
+async function getProductImageAttachment() {
+  for (const candidate of getProductImageCandidates()) {
+    const imagePath = path.resolve(process.cwd(), candidate);
+
+    try {
+      return {
+        filename: path.basename(imagePath),
+        content: await fs.readFile(imagePath),
+        cid: PRODUCT_IMAGE_CID,
+        contentType: "image/png",
+      };
+    } catch (error) {
+      if (error.code !== "ENOENT") {
+        throw error;
+      }
+    }
+  }
+
+  return null;
+}
+
 function getTransporter() {
   if (transporter) {
     return transporter;
@@ -96,6 +128,14 @@ export async function sendDownloadEmail({ to, downloadUrl, expiresAt, lineItems 
   const itemLabel = getLineItemLabel(lineItems);
   const maxDownloads = getMaxDownloadsLabel();
   const expiryLabel = formatExpiry(expiresAt);
+  const productImageAttachment = await getProductImageAttachment();
+  const productImageHtml = productImageAttachment
+    ? `
+          <div style="margin:-4px 0 22px;background:#101713;border-radius:18px;padding:22px 20px;text-align:center;">
+            <img src="cid:${PRODUCT_IMAGE_CID}" width="250" alt="Hola Gringo digital edition" style="display:block;width:100%;max-width:250px;height:auto;margin:0 auto;border:0;" />
+          </div>
+        `
+    : "";
   const qrCodeBuffer = await QRCode.toBuffer(downloadUrl, {
     errorCorrectionLevel: "M",
     margin: 2,
@@ -126,6 +166,7 @@ export async function sendDownloadEmail({ to, downloadUrl, expiresAt, lineItems 
           <h1 style="margin:10px 0 0;font-size:28px;line-height:1.15;">Your Hola Gringo download is ready</h1>
         </div>
         <div style="padding:28px;">
+          ${productImageHtml}
           <p style="margin:0 0 18px;font-size:16px;line-height:1.6;">Thank you for your order. This email is your backup in case the checkout page download did not work.</p>
           <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#425046;">Order: <strong>${escapeHtml(itemLabel)}</strong></p>
           <p style="margin:0 0 18px;text-align:center;">
@@ -150,6 +191,7 @@ export async function sendDownloadEmail({ to, downloadUrl, expiresAt, lineItems 
     text,
     html,
     attachments: [
+      ...(productImageAttachment ? [productImageAttachment] : []),
       {
         filename: "hola-gringo-download-qr.png",
         content: qrCodeBuffer,
