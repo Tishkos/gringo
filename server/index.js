@@ -8,11 +8,22 @@ import { isDownloadEmailConfigured, sendDownloadEmail } from "./email.js";
 import {
   claimFulfillmentEmail,
   consumeToken,
+  createMarketingQrCodes,
   createOrGetFulfillment,
   getFulfillmentBySession,
+  listMarketingQrCodes,
   markFulfillmentEmailFailed,
   markFulfillmentEmailSent,
 } from "./store.js";
+import {
+  clearAdminSessionCookie,
+  createAdminSession,
+  getAdminAuthStatus,
+  readAdminSession,
+  requireAdmin,
+  setAdminSessionCookie,
+  verifyAdminCredentials,
+} from "./security.js";
 
 dotenv.config({ path: "server/.env" });
 dotenv.config();
@@ -27,6 +38,11 @@ const publicBaseUrl = process.env.PUBLIC_BASE_URL || `http://localhost:${port}`;
 const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY)
   : null;
+const loginAttempts = new Map();
+const maxLoginAttempts = 5;
+const loginWindowMs = 15 * 60 * 1000;
+
+app.disable("x-powered-by");
 
 function getAllowedPriceIds() {
   return (process.env.ALLOWED_PRICE_IDS || "")
@@ -37,6 +53,67 @@ function getAllowedPriceIds() {
 
 function getDownloadUrl(token) {
   return `${publicBaseUrl.replace(/\/$/, "")}/api/download/${token}`;
+}
+
+function getLoginKey(request) {
+  return request.ip || request.socket.remoteAddress || "unknown";
+}
+
+function getLoginAttempt(key) {
+  const attempt = loginAttempts.get(key);
+
+  if (!attempt || attempt.resetAt < Date.now()) {
+    return { failures: 0, resetAt: Date.now() + loginWindowMs };
+  }
+
+  return attempt;
+}
+
+function recordFailedLogin(key) {
+  const attempt = getLoginAttempt(key);
+  const updatedAttempt = {
+    failures: attempt.failures + 1,
+    resetAt: attempt.resetAt,
+  };
+
+  loginAttempts.set(key, updatedAttempt);
+  return updatedAttempt;
+}
+
+function clearLoginAttempt(key) {
+  loginAttempts.delete(key);
+}
+
+function isLoginBlocked(key) {
+  const attempt = getLoginAttempt(key);
+  return attempt.failures >= maxLoginAttempts && attempt.resetAt > Date.now();
+}
+
+function marketingCodeResponse(record) {
+  return {
+    token: record.token,
+    campaignName: record.campaignName,
+    batchId: record.batchId,
+    createdAt: record.createdAt,
+    expiresAt: record.expiresAt,
+    usedAt: record.usedAt,
+    downloads: record.downloads,
+    maxDownloads: record.maxDownloads,
+    downloadUrl: getDownloadUrl(record.token),
+  };
+}
+
+function marketingCodesResponse(records) {
+  const codes = records.map(marketingCodeResponse);
+
+  return {
+    codes,
+    totals: {
+      total: codes.length,
+      used: codes.filter((code) => code.downloads >= code.maxDownloads).length,
+      available: codes.filter((code) => code.downloads < code.maxDownloads).length,
+    },
+  };
 }
 
 function isLocalCheckoutTestEnabled() {
@@ -169,8 +246,14 @@ async function fulfillCheckoutSession(sessionId) {
 
 app.use(
   cors({
+    credentials: true,
     origin(origin, callback) {
-      if (!origin || clientOrigins.includes(origin)) {
+      if (
+        !origin ||
+        clientOrigins.includes(origin) ||
+        origin.startsWith("http://localhost:") ||
+        origin.startsWith("http://127.0.0.1:")
+      ) {
         callback(null, true);
         return;
       }
@@ -179,6 +262,17 @@ app.use(
     },
   }),
 );
+
+app.use((request, response, next) => {
+  response.setHeader("X-Content-Type-Options", "nosniff");
+  response.setHeader("Referrer-Policy", "same-origin");
+
+  if (request.path.startsWith("/api/admin")) {
+    response.setHeader("Cache-Control", "no-store");
+  }
+
+  next();
+});
 
 app.post(
   "/api/stripe/webhook",
@@ -230,6 +324,77 @@ app.get("/api/health", (_request, response) => {
   });
 });
 
+app.get("/api/admin/session", (request, response) => {
+  const session = readAdminSession(request);
+  const adminStatus = getAdminAuthStatus();
+
+  response.json({
+    authenticated: Boolean(session),
+    configured: adminStatus.configured,
+    email: session?.email || adminStatus.email,
+  });
+});
+
+app.post("/api/admin/login", async (request, response) => {
+  const key = getLoginKey(request);
+  const adminStatus = getAdminAuthStatus();
+
+  if (!adminStatus.configured) {
+    response.status(503).json({ error: "Admin password is not configured." });
+    return;
+  }
+
+  if (isLoginBlocked(key)) {
+    response.status(429).json({ error: "Too many login attempts. Try again later." });
+    return;
+  }
+
+  const isValid = await verifyAdminCredentials(request.body?.email, request.body?.password);
+
+  if (!isValid) {
+    recordFailedLogin(key);
+    response.status(401).json({ error: "Invalid email or password." });
+    return;
+  }
+
+  clearLoginAttempt(key);
+  setAdminSessionCookie(response, createAdminSession(request.body.email));
+  response.json({ authenticated: true, email: adminStatus.email });
+});
+
+app.post("/api/admin/logout", (_request, response) => {
+  clearAdminSessionCookie(response);
+  response.json({ authenticated: false });
+});
+
+app.get("/api/admin/marketing-qr-codes", requireAdmin, async (_request, response) => {
+  const records = await listMarketingQrCodes();
+  response.json(marketingCodesResponse(records));
+});
+
+app.post("/api/admin/marketing-qr-codes", requireAdmin, async (request, response) => {
+  const quantity = Number.parseInt(request.body?.quantity, 10);
+  const campaignName = String(request.body?.campaignName || "").trim();
+
+  if (!Number.isFinite(quantity) || quantity < 1 || quantity > 100) {
+    response.status(400).json({ error: "Quantity must be between 1 and 100." });
+    return;
+  }
+
+  if (!campaignName) {
+    response.status(400).json({ error: "Campaign name is required." });
+    return;
+  }
+
+  const records = await createMarketingQrCodes({
+  campaignName,
+  quantity,
+  createdBy: request.admin.email,
+  });
+
+  response.status(201).json(marketingCodesResponse(records));
+});
+
 app.post("/api/dev/create-checkout-test", async (_request, response) => {
   if (!isLocalCheckoutTestEnabled()) {
     response.status(404).json({ error: "Local checkout testing is disabled." });
@@ -279,6 +444,7 @@ app.get("/api/download/:token", async (request, response) => {
 
   try {
     await consumeToken(request.params.token);
+    response.setHeader("Cache-Control", "private, no-store");
     response.download(
       filePath,
       process.env.DOWNLOAD_FILE_NAME || "La Inoficial - Digital Album.zip",

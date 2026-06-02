@@ -10,6 +10,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Home from './pages/Home';
 import TermsAndConditions from './pages/TermsAndConditions';
 import CheckoutSuccess from './pages/CheckoutSuccess';
+import Admin from './pages/Admin';
 // Add page imports here
 
 const ScrollToHash = () => {
@@ -61,6 +62,7 @@ const AuthenticatedApp = () => {
         <Route path="/" element={<Home />} />
         <Route path="/terms" element={<TermsAndConditions />} />
         <Route path="/checkout/success" element={<CheckoutSuccess />} />
+        <Route path="/admin" element={<Admin />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </>
